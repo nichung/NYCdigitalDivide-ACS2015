@@ -1,0 +1,7 @@
+.secret
+*.pyc
+data/ss13ny.csv
+data/ss14ny.csv
+data/ss15ny.csv
+data/puma_ny.csv
+
