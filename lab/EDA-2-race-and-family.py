@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[27]:
+# In[1]:
 
 import boto
 import pandas as pd
@@ -23,12 +23,12 @@ b = c.get_bucket('nichung-datasets')
 
 # **Load CSV and assign to dataframe**
 
-# In[3]:
+# In[16]:
 
 mergeNY13_df = pd.read_csv('s3:/nichung-datasets/ss13ny.csv')
 
 
-# In[5]:
+# In[25]:
 
 mergeNY14_df = pd.read_csv('s3:/nichung-datasets/ss14ny.csv')
 
@@ -41,6 +41,122 @@ mergeNY15_df = pd.read_csv('s3:/nichung-datasets/ss15ny.csv')
 # In[8]:
 
 ny_puma_df = pd.read_csv('s3:/nichung-datasets/puma_ny.csv')
+
+
+# remove unnecessary columns and double-check NaN values
+
+# In[18]:
+
+mergeNY13_df.drop(mergeNY13_df.columns[[0, 1, 2]], axis=1)
+
+
+# In[28]:
+
+mergeNY14_df.replace(r'\s+', np.nan, regex=True, inplace=True)
+
+
+# In[33]:
+
+mergeNY14_df.drop(mergeNY14_df.columns[[0, 1, 2]], axis=1)
+
+
+# In[22]:
+
+
+mergeNY15_df.drop(mergeNY15_df.columns[[0, 1, 2]], axis=1)
+
+
+# In[38]:
+
+import os, math
+from filechunkio import FileChunkIO
+
+mergeNY13_df.to_csv('/tmp/ss13ny.csv')
+# get file info
+source_path = '/tmp/ss13ny.csv'
+source_size = os.stat(source_path).st_size
+
+# create multipart upload request
+mp = b.initiate_multipart_upload(os.path.basename(source_path))
+
+# use chunk size of 50 MiB
+chunk_size = 52428800
+chunk_count = int(math.ceil(source_size / float(chunk_size)))
+
+
+# In[40]:
+
+# send the file parts, using FileChunkIO to create a file-like object
+# that points to a certain byte range within the original file.
+# set bytes to never exceed original file size.
+
+for i in range(chunk_count):
+    offset = chunk_size * i
+    bytes = min(chunk_size, source_size - offset)
+    with FileChunkIO(source_path, 'r', offset=offset,
+                    bytes=bytes) as fp:
+        mp.upload_part_from_file(fp, part_num=i + 1)
+
+# finish upload
+mp.complete_upload()
+
+
+# In[41]:
+
+mergeNY14_df.to_csv('/tmp/ss14ny.csv')
+# get file info
+source_path = '/tmp/ss14ny.csv'
+source_size = os.stat(source_path).st_size
+
+# create multipart upload request
+mp = b.initiate_multipart_upload(os.path.basename(source_path))
+
+# use chunk size of 50 MiB
+chunk_size = 52428800
+chunk_count = int(math.ceil(source_size / float(chunk_size)))
+
+# send the file parts, using FileChunkIO to create a file-like object
+# that points to a certain byte range within the original file.
+# set bytes to never exceed original file size.
+
+for i in range(chunk_count):
+    offset = chunk_size * i
+    bytes = min(chunk_size, source_size - offset)
+    with FileChunkIO(source_path, 'r', offset=offset,
+                    bytes=bytes) as fp:
+        mp.upload_part_from_file(fp, part_num=i + 1)
+
+# finish upload
+mp.complete_upload()
+
+
+# In[42]:
+
+mergeNY15_df.to_csv('/tmp/ss15ny.csv')
+# get file info
+source_path = '/tmp/ss15ny.csv'
+source_size = os.stat(source_path).st_size
+
+# create multipart upload request
+mp = b.initiate_multipart_upload(os.path.basename(source_path))
+
+# use chunk size of 50 MiB
+chunk_size = 52428800
+chunk_count = int(math.ceil(source_size / float(chunk_size)))
+
+# send the file parts, using FileChunkIO to create a file-like object
+# that points to a certain byte range within the original file.
+# set bytes to never exceed original file size.
+
+for i in range(chunk_count):
+    offset = chunk_size * i
+    bytes = min(chunk_size, source_size - offset)
+    with FileChunkIO(source_path, 'r', offset=offset,
+                    bytes=bytes) as fp:
+        mp.upload_part_from_file(fp, part_num=i + 1)
+
+# finish upload
+mp.complete_upload()
 
 
 # ***
@@ -349,9 +465,14 @@ print result.params
 print result.summary()
 
 
-# In[66]:
+# In[9]:
 
 mergeNY14_df.GRPIP.describe()
+
+
+# In[ ]:
+
+
 
 
 # In[64]:
