@@ -465,14 +465,106 @@ print result.params
 print result.summary()
 
 
-# In[9]:
+# In[46]:
 
-mergeNY14_df.GRPIP.describe()
+mergeNY13_df.COW.value_counts()
+
+
+# In[47]:
+
+mergeNY14_df.COW.value_counts()
+
+
+# In[48]:
+
+mergeNY15_df.COW.value_counts()
+
+
+# In[64]:
+
+#worker class by age group 2013
+cow_by_age_13 = pd.crosstab(mergeNY13_df.age_group_13, mergeNY13_df.COW, margins=True);
+cow_by_age_13.index = ['<18', '18-24', '25-34', '35-44', '45-54', '55-64', '>65', 'rowtotal'];
+cow_by_age_13.columns = ['for-profit', 'non-profit', 'local gov', 'state gov', 'fed gov', 'private self-employed', 'inc self-employed', 'fam biz/farm w/o pay', 'unemployed', 'coltotal'];
+cow_by_age_13
+
+
+# In[65]:
+
+cow_by_age_13_no_total = cow_by_age_13.ix[0:7,0:9]
+cow_by_age_13_no_total
+
+
+# In[66]:
+
+#worker class by age group 2014
+cow_by_age_14 = pd.crosstab(mergeNY14_df.age_group_14, mergeNY14_df.COW, margins=True);
+cow_by_age_14.index = ['<18', '18-24', '25-34', '35-44', '45-54', '55-64', '>65', 'rowtotal'];
+cow_by_age_14.columns = ['for-profit', 'non-profit', 'local gov', 'state gov', 'fed gov', 'private self-employed', 'inc self-employed', 'fam biz/farm w/o pay', 'unemployed', 'coltotal'];
+cow_by_age_14
+
+
+# In[67]:
+
+cow_by_age_14_no_total = cow_by_age_14.ix[0:7,0:9]
+cow_by_age_14_no_total
+
+
+# In[68]:
+
+#worker class by age group 2015
+cow_by_age_15 = pd.crosstab(mergeNY15_df.age_group_15, mergeNY15_df.COW, margins=True);
+cow_by_age_15.index = ['<18', '18-24', '25-34', '35-44', '45-54', '55-64', '>65', 'rowtotal'];
+cow_by_age_15.columns = ['for-profit', 'non-profit', 'local gov', 'state gov', 'fed gov', 'private self-employed', 'inc self-employed', 'fam biz/farm w/o pay', 'unemployed', 'coltotal'];
+cow_by_age_15
+
+
+# In[69]:
+
+cow_by_age_15_no_total = cow_by_age_15.ix[0:7,0:9]
+cow_by_age_15_no_total
+
+
+# In[70]:
+
+cow_by_age_13_no_total.iplot(kind='bar', barmode='stack', filename='worker-class-by-age-13.html')
+
+
+# In[71]:
+
+cow_by_age_14_no_total.iplot(kind='bar', barmode='stack', filename='worker-class-by-age-14.html')
+
+
+# In[72]:
+
+cow_by_age_15_no_total.iplot(kind='bar', barmode='stack', filename='worker-class-by-age-15.html')
+
+
+# In[74]:
+
+# chi-squared test of independence to test null hypothesis 
+# that there is no association between access and class of worker
+access_by_cow_13 = pd.crosstab(mergeNY13_df.COW, mergeNY13_df.ACCESS, margins=True);
+access_by_cow_13.columns = ['yes', 'yes w/o sub', 'no', 'rowtotal'];
+access_by_cow_13.index= ['for-profit', 'non-profit', 'local gov', 'state gov', 'fed gov', 'private self-employed', 'inc self-employed', 'fam biz/farm w/o pay', 'unemployed', 'coltotal'];
+
+access_by_cow_13_no_total = access_by_cow_13.ix[0:9,0:3]
+access_by_cow_13_no_total
+
+
+# In[75]:
+
+access_by_cow_13_no_total.iplot(kind='bar', barmode='stack', filename='access-by-cow-13.html')
 
 
 # In[ ]:
 
 
+
+
+# In[9]:
+
+mergeNY14_df.GRPIP.describe()
 
 
 # In[64]:
