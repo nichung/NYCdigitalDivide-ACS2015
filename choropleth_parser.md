@@ -20,7 +20,6 @@ import boto
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-from scipy.stats import chi2_contingency
 
 
 # connect Amazon S3 bucket with boto2
